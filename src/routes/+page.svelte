@@ -7,6 +7,8 @@
 	});
 </script>
 
+<p>tip: open this page in multiple tabs</p>
+
 <label>
 	<input type="color" bind:value={box.current.color} />
 	color
