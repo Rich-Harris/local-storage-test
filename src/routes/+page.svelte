@@ -1,3 +1,5 @@
+<svelte:options runes />
+
 <script>
 	import { LocalStorage } from '$lib/storage.svelte';
 

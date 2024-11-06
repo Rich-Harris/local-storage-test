@@ -47,6 +47,7 @@ export class LocalStorage<T> {
 						return proxy(Reflect.get(target, property));
 					},
 					set: (target, property, value) => {
+						this.#version += 1;
 						Reflect.set(target, property, value);
 
 						if (typeof localStorage !== 'undefined') {
