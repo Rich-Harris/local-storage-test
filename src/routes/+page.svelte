@@ -24,7 +24,7 @@
 	height
 </label>
 
-<hr>
+<hr />
 
 <div
 	class="box"

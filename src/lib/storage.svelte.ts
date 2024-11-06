@@ -11,7 +11,7 @@ export class LocalStorage<T> {
 		if (e.key !== this.#key) return;
 
 		this.#version += 1;
-	}
+	};
 
 	constructor(key: string, initial?: T) {
 		this.#key = key;
@@ -27,7 +27,10 @@ export class LocalStorage<T> {
 	get current() {
 		this.#version;
 
-		const root = typeof localStorage !== 'undefined' ? JSON.parse(localStorage.getItem(this.#key) as any) : this.#value;
+		const root =
+			typeof localStorage !== 'undefined'
+				? JSON.parse(localStorage.getItem(this.#key) as any)
+				: this.#value;
 
 		const proxies = new WeakMap();
 
@@ -47,7 +50,7 @@ export class LocalStorage<T> {
 						Reflect.set(target, property, value);
 
 						if (typeof localStorage !== 'undefined') {
-							localStorage.setItem(this.#key, JSON.stringify(root))
+							localStorage.setItem(this.#key, JSON.stringify(root));
 						}
 
 						return true;
@@ -58,12 +61,12 @@ export class LocalStorage<T> {
 			}
 
 			return p;
-		}
+		};
 
 		if ($effect.tracking()) {
 			$effect(() => {
 				if (this.#listeners === 0) {
-					window.addEventListener('storage', this.#handler)
+					window.addEventListener('storage', this.#handler);
 				}
 
 				this.#listeners += 1;
