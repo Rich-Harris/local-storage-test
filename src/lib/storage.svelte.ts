@@ -44,6 +44,7 @@ export class LocalStorage<T> {
 			if (!p) {
 				p = new Proxy(value, {
 					get: (target, property) => {
+						this.#version;
 						return proxy(Reflect.get(target, property));
 					},
 					set: (target, property, value) => {
