@@ -1,6 +1,6 @@
 import { tick } from 'svelte';
 
-export class LocalStorage<T> {
+export class LocalStorage<T extends object> {
 	#key: string;
 	#version = $state(0);
 	#listeners = 0;
@@ -24,27 +24,27 @@ export class LocalStorage<T> {
 		}
 	}
 
-	get current() {
+	get current(): T {
 		this.#version;
 
 		const root =
 			typeof localStorage !== 'undefined'
-				? JSON.parse(localStorage.getItem(this.#key) as any)
-				: this.#value;
+				? (JSON.parse(localStorage.getItem(this.#key)!) as T)
+				: (this.#value as T);
 
-		const proxies = new WeakMap();
+		const proxies = new WeakMap<object, T>();
 
-		const proxy = (value: unknown) => {
+		const proxy = (value: T | unknown): T | unknown => {
 			if (typeof value !== 'object' || value === null) {
 				return value;
 			}
 
-			let p = proxies.get(value);
+			let p = proxies.get(value as object);
 
 			if (!p) {
-				p = new Proxy(value, {
+				p = new Proxy(value as T, {
 					get: (target, property) => {
-						return proxy(Reflect.get(target, property));
+						return proxy(Reflect.get(target, property) as T);
 					},
 					set: (target, property, value) => {
 						this.#version += 1;
@@ -56,9 +56,9 @@ export class LocalStorage<T> {
 
 						return true;
 					}
-				});
+				}) as T;
 
-				proxies.set(value, p);
+				proxies.set(value as object, p);
 			}
 
 			return p;
@@ -83,10 +83,10 @@ export class LocalStorage<T> {
 			});
 		}
 
-		return proxy(root);
+		return proxy(root) as T;
 	}
 
-	set current(value) {
+	set current(value: T) {
 		if (typeof localStorage !== 'undefined') {
 			localStorage.setItem(this.#key, JSON.stringify(value));
 		}
